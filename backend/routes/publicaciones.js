@@ -137,7 +137,7 @@ router.post('/', authMiddleware, upload.array('imagenes', 8), compressAndSaveIma
         const file = req.files[i];
         const { query: imgQuery, params: imgParams } = toSQL(
           'INSERT INTO imagenes (publicacion_id, url, orden) VALUES (?, ?, ?)',
-          [publicacionId, `/uploads/${file.filename}`, i]
+          [publicacionId, file.path, i]
         );
         await db.query(imgQuery, imgParams);
       }
@@ -211,7 +211,7 @@ router.put('/:id', authMiddleware, upload.array('imagenes', 8), compressAndSaveI
         const file = req.files[i];
         const { query: insQuery, params: insParams } = toSQL(
           'INSERT INTO imagenes (publicacion_id, url, orden) VALUES (?, ?, ?)',
-          [id, `/uploads/${file.filename}`, startOrden + i]
+          [id, file.path, startOrden + i]
         );
         await db.query(insQuery, insParams);
       }

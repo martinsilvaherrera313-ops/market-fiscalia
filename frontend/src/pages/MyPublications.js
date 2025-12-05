@@ -194,7 +194,7 @@ const MyPublications = () => {
                   onClick={() => handleToggleEstado(pub.id, pub.estado, pub.titulo)}
                   className={pub.estado === 'vendido' ? 'btn-reactivar' : 'btn-vendido'}
                 >
-                  {pub.estado === 'vendido' ? 'Reactivar' : 'Marcar Vendido'}
+                  {pub.estado === 'vendido' ? 'Reactivar' : 'Vendido'}
                 </button>
                 <button 
                   onClick={() => handleDelete(pub.id, pub.titulo)}

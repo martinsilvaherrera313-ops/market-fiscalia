@@ -53,7 +53,7 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     // Obtener publicación
-    const [publicaciones] = await db.query(`
+    const { query: pubQuery, params: pubParams } = toSQL(`
       SELECT 
         p.*, 
         u.id as usuario_id, u.nombre as usuario_nombre, 
@@ -62,16 +62,20 @@ router.get('/:id', async (req, res) => {
       INNER JOIN usuarios u ON p.usuario_id = u.id
       WHERE p.id = ?
     `, [id]);
+    const pubResult = await db.query(pubQuery, pubParams);
+    const publicaciones = isPostgres ? pubResult.rows : pubResult[0];
 
     if (publicaciones.length === 0) {
       return res.status(404).json({ error: 'Publicación no encontrada' });
     }
 
     // Obtener imágenes
-    const [imagenes] = await db.query(
+    const { query: imgQuery, params: imgParams } = toSQL(
       'SELECT id, url, orden FROM imagenes WHERE publicacion_id = ? ORDER BY orden',
       [id]
     );
+    const imgResult = await db.query(imgQuery, imgParams);
+    const imagenes = isPostgres ? imgResult.rows : imgResult[0];
 
     const publicacion = {
       ...publicaciones[0],
@@ -88,7 +92,7 @@ router.get('/:id', async (req, res) => {
 // Obtener mis publicaciones
 router.get('/user/myposts', authMiddleware, async (req, res) => {
   try {
-    const [publicaciones] = await db.query(`
+    const { query: myQuery, params: myParams } = toSQL(`
       SELECT 
         p.*,
         (SELECT url FROM imagenes WHERE publicacion_id = p.id ORDER BY orden LIMIT 1) as imagen_principal
@@ -96,6 +100,8 @@ router.get('/user/myposts', authMiddleware, async (req, res) => {
       WHERE p.usuario_id = ?
       ORDER BY p.created_at DESC
     `, [req.user.id]);
+    const myResult = await db.query(myQuery, myParams);
+    const publicaciones = isPostgres ? myResult.rows : myResult[0];
 
     res.json(publicaciones);
   } catch (error) {
@@ -106,129 +112,115 @@ router.get('/user/myposts', authMiddleware, async (req, res) => {
 
 // Crear publicación con imágenes
 router.post('/', authMiddleware, upload.array('imagenes', 8), compressAndSaveImages, publicacionValidation, async (req, res) => {
-  const connection = await db.getConnection();
-  
   try {
-    await connection.beginTransaction();
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      await connection.rollback();
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { titulo, descripcion, precio } = req.body;
 
     // Insertar publicación
-    const [result] = await connection.query(
-      'INSERT INTO publicaciones (usuario_id, titulo, descripcion, precio) VALUES (?, ?, ?, ?)',
+    const { query: insertQuery, params: insertParams } = toSQL(
+      isPostgres
+        ? 'INSERT INTO publicaciones (usuario_id, titulo, descripcion, precio) VALUES (?, ?, ?, ?) RETURNING id'
+        : 'INSERT INTO publicaciones (usuario_id, titulo, descripcion, precio) VALUES (?, ?, ?, ?)',
       [req.user.id, titulo, descripcion, precio]
     );
-
-    const publicacionId = result.insertId;
+    
+    const insertResult = await db.query(insertQuery, insertParams);
+    const publicacionId = isPostgres ? insertResult.rows[0].id : insertResult[0].insertId;
 
     // Insertar imágenes si existen
     if (req.files && req.files.length > 0) {
-      const imagenesData = req.files.map((file, index) => [
-        publicacionId,
-        `/uploads/${file.filename}`,
-        index
-      ]);
-
-      await connection.query(
-        'INSERT INTO imagenes (publicacion_id, url, orden) VALUES ?',
-        [imagenesData]
-      );
+      for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
+        const { query: imgQuery, params: imgParams } = toSQL(
+          'INSERT INTO imagenes (publicacion_id, url, orden) VALUES (?, ?, ?)',
+          [publicacionId, `/uploads/${file.filename}`, i]
+        );
+        await db.query(imgQuery, imgParams);
+      }
     }
-
-    await connection.commit();
 
     res.status(201).json({
       message: 'Publicación creada exitosamente',
       publicacionId
     });
   } catch (error) {
-    await connection.rollback();
     console.error('Error al crear publicación:', error);
     res.status(500).json({ error: 'Error al crear publicación' });
-  } finally {
-    connection.release();
   }
 });
 
 // Actualizar publicación
 router.put('/:id', authMiddleware, upload.array('imagenes', 8), compressAndSaveImages, publicacionValidation, async (req, res) => {
-  const connection = await db.getConnection();
-  
   try {
-    await connection.beginTransaction();
-
     const { id } = req.params;
     const { titulo, descripcion, precio, imagenesAEliminar } = req.body;
 
     // Verificar que la publicación pertenece al usuario
-    const [publicaciones] = await connection.query(
+    const { query: checkQuery, params: checkParams } = toSQL(
       'SELECT usuario_id FROM publicaciones WHERE id = ?',
       [id]
     );
+    const checkResult = await db.query(checkQuery, checkParams);
+    const publicaciones = isPostgres ? checkResult.rows : checkResult[0];
 
     if (publicaciones.length === 0) {
-      await connection.rollback();
       return res.status(404).json({ error: 'Publicación no encontrada' });
     }
 
     if (publicaciones[0].usuario_id !== req.user.id) {
-      await connection.rollback();
       return res.status(403).json({ error: 'No tienes permiso para editar esta publicación' });
     }
 
     // Actualizar publicación
-    await connection.query(
+    const { query: updateQuery, params: updateParams } = toSQL(
       'UPDATE publicaciones SET titulo = ?, descripcion = ?, precio = ? WHERE id = ?',
       [titulo, descripcion, precio, id]
     );
+    await db.query(updateQuery, updateParams);
 
     // Eliminar imágenes si se especificaron
     if (imagenesAEliminar) {
       const idsAEliminar = JSON.parse(imagenesAEliminar);
       if (idsAEliminar.length > 0) {
-        await connection.query(
-          'DELETE FROM imagenes WHERE id IN (?) AND publicacion_id = ?',
-          [idsAEliminar, id]
-        );
+        for (const imgId of idsAEliminar) {
+          const { query: delQuery, params: delParams } = toSQL(
+            'DELETE FROM imagenes WHERE id = ? AND publicacion_id = ?',
+            [imgId, id]
+          );
+          await db.query(delQuery, delParams);
+        }
       }
     }
 
     // Agregar nuevas imágenes si existen
     if (req.files && req.files.length > 0) {
       // Obtener el orden máximo actual
-      const [maxOrden] = await connection.query(
+      const { query: maxQuery, params: maxParams } = toSQL(
         'SELECT COALESCE(MAX(orden), -1) as max_orden FROM imagenes WHERE publicacion_id = ?',
         [id]
       );
+      const maxResult = await db.query(maxQuery, maxParams);
+      const maxRows = isPostgres ? maxResult.rows : maxResult[0];
+      const startOrden = maxRows[0].max_orden + 1;
 
-      const startOrden = maxOrden[0].max_orden + 1;
-      const imagenesData = req.files.map((file, index) => [
-        id,
-        `/uploads/${file.filename}`,
-        startOrden + index
-      ]);
-
-      await connection.query(
-        'INSERT INTO imagenes (publicacion_id, url, orden) VALUES ?',
-        [imagenesData]
-      );
+      for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
+        const { query: insQuery, params: insParams } = toSQL(
+          'INSERT INTO imagenes (publicacion_id, url, orden) VALUES (?, ?, ?)',
+          [id, `/uploads/${file.filename}`, startOrden + i]
+        );
+        await db.query(insQuery, insParams);
+      }
     }
-
-    await connection.commit();
 
     res.json({ message: 'Publicación actualizada exitosamente' });
   } catch (error) {
-    await connection.rollback();
     console.error('Error al actualizar publicación:', error);
     res.status(500).json({ error: 'Error al actualizar publicación' });
-  } finally {
-    connection.release();
   }
 });
 
@@ -238,10 +230,12 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     const { id } = req.params;
 
     // Verificar que la publicación pertenece al usuario
-    const [publicaciones] = await db.query(
+    const { query: checkQuery, params: checkParams } = toSQL(
       'SELECT usuario_id FROM publicaciones WHERE id = ?',
       [id]
     );
+    const checkResult = await db.query(checkQuery, checkParams);
+    const publicaciones = isPostgres ? checkResult.rows : checkResult[0];
 
     if (publicaciones.length === 0) {
       return res.status(404).json({ error: 'Publicación no encontrada' });
@@ -252,7 +246,11 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     }
 
     // Eliminar publicación (las imágenes se eliminan por CASCADE)
-    await db.query('DELETE FROM publicaciones WHERE id = ?', [id]);
+    const { query: delQuery, params: delParams } = toSQL(
+      'DELETE FROM publicaciones WHERE id = ?',
+      [id]
+    );
+    await db.query(delQuery, delParams);
 
     res.json({ message: 'Publicación eliminada exitosamente' });
   } catch (error) {
@@ -273,10 +271,12 @@ router.patch('/:id/estado', authMiddleware, async (req, res) => {
     }
 
     // Verificar que la publicación pertenece al usuario
-    const [publicaciones] = await db.query(
+    const { query: checkQuery, params: checkParams } = toSQL(
       'SELECT usuario_id FROM publicaciones WHERE id = ?',
       [id]
     );
+    const checkResult = await db.query(checkQuery, checkParams);
+    const publicaciones = isPostgres ? checkResult.rows : checkResult[0];
 
     if (publicaciones.length === 0) {
       return res.status(404).json({ error: 'Publicación no encontrada' });
@@ -287,7 +287,11 @@ router.patch('/:id/estado', authMiddleware, async (req, res) => {
     }
 
     // Actualizar estado
-    await db.query('UPDATE publicaciones SET estado = ? WHERE id = ?', [estado, id]);
+    const { query: updateQuery, params: updateParams } = toSQL(
+      'UPDATE publicaciones SET estado = ? WHERE id = ?',
+      [estado, id]
+    );
+    await db.query(updateQuery, updateParams);
 
     const mensajes = {
       vendido: 'Publicación marcada como vendida',

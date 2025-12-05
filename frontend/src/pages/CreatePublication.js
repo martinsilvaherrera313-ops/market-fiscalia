@@ -142,7 +142,7 @@ const CreatePublication = () => {
 
           <div className="form-group">
             <label htmlFor="imagenes">
-              Imágenes ({imagenes.length}/5)
+              Imágenes ({imagenes.length}/8)
             </label>
             <input
               type="file"

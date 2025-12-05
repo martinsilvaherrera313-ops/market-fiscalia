@@ -225,7 +225,7 @@ const EditPublication = () => {
           {/* Nuevas imágenes */}
           <div className="form-group">
             <label htmlFor="imagenes">
-              Agregar nuevas imágenes ({totalImagenes}/5)
+              Agregar nuevas imágenes ({totalImagenes}/8)
             </label>
             <input
               type="file"

@@ -196,7 +196,7 @@ const EditPublication = () => {
                     className={`preview-item ${imagenesAEliminar.includes(img.id) ? 'to-delete' : ''}`}
                   >
                     <img 
-                      src={`http://localhost:5000${img.url}`} 
+                      src={img.url?.startsWith('http') ? img.url : `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${img.url}`} 
                       alt="Imagen actual"
                     />
                     {imagenesAEliminar.includes(img.id) ? (

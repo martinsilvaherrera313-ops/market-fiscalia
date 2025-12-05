@@ -95,7 +95,7 @@ const PublicationDetail = () => {
             <>
               <div className="main-image">
                 <img 
-                  src={`http://localhost:5000${images[currentImageIndex].url}`}
+                  src={images[currentImageIndex].url.startsWith('http') ? images[currentImageIndex].url : `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${images[currentImageIndex].url}`}
                   alt={publicacion.titulo}
                   onError={(e) => {
                     e.target.src = 'https://via.placeholder.com/600x400?text=Error+al+cargar+imagen';
@@ -124,7 +124,7 @@ const PublicationDetail = () => {
                       onClick={() => setCurrentImageIndex(index)}
                     >
                       <img 
-                        src={`http://localhost:5000${img.url}`}
+                        src={img.url.startsWith('http') ? img.url : `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${img.url}`}
                         alt={`${publicacion.titulo} ${index + 1}`}
                       />
                     </div>

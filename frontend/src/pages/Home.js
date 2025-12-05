@@ -197,7 +197,7 @@ const Home = () => {
                 <div className="publication-image">
                   {pub.imagen_principal ? (
                     <img 
-                      src={`http://localhost:5000${pub.imagen_principal}`} 
+                      src={pub.imagen_principal.startsWith('http') ? pub.imagen_principal : `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${pub.imagen_principal}`}
                       alt={pub.titulo}
                       onError={(e) => {
                         e.target.src = 'https://via.placeholder.com/400x300?text=Sin+Imagen';

@@ -6,6 +6,17 @@ const authMiddleware = require('../middleware/auth');
 const upload = require('../middleware/upload');
 const { compressAndSaveImages } = require('../middleware/upload');
 
+// Detectar tipo de base de datos
+const isPostgres = process.env.DATABASE_URL || process.env.DB_TYPE === 'postgres';
+
+// Helper para convertir placeholders
+function toSQL(query, params) {
+  if (!isPostgres) return { query, params };
+  let paramIndex = 1;
+  const newQuery = query.replace(/\?/g, () => `$${paramIndex++}`);
+  return { query: newQuery, params };
+}
+
 // Validaciones
 const publicacionValidation = [
   body('titulo').trim().notEmpty().withMessage('El título es requerido')
@@ -17,7 +28,7 @@ const publicacionValidation = [
 // Obtener todas las publicaciones activas (feed)
 router.get('/', async (req, res) => {
   try {
-    const [publicaciones] = await db.query(`
+    const result = await db.query(`
       SELECT 
         p.id, p.titulo, p.descripcion, p.precio, p.estado, p.created_at,
         u.id as usuario_id, u.nombre as usuario_nombre, u.email as usuario_email,
@@ -28,6 +39,7 @@ router.get('/', async (req, res) => {
       ORDER BY p.created_at DESC
     `);
 
+    const publicaciones = isPostgres ? result.rows : result[0];
     res.json(publicaciones);
   } catch (error) {
     console.error('Error al obtener publicaciones:', error);

@@ -14,6 +14,8 @@ const Home = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [busqueda, setBusqueda] = useState('');
   const [ordenamiento, setOrdenamiento] = useState('recientes');
+  const [paginaActual, setPaginaActual] = useState(1);
+  const publicacionesPorPagina = 12;
 
   useEffect(() => {
     fetchPublicaciones();
@@ -29,6 +31,7 @@ const Home = () => {
 
   useEffect(() => {
     filtrarYOrdenar();
+    setPaginaActual(1); // Resetear a página 1 cuando cambian filtros
   }, [publicaciones, busqueda, ordenamiento]);
 
   const fetchPublicaciones = async () => {
@@ -91,6 +94,17 @@ const Home = () => {
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('es-CL', options);
+  };
+
+  // Calcular índices de paginación
+  const indexUltimaPublicacion = paginaActual * publicacionesPorPagina;
+  const indexPrimeraPublicacion = indexUltimaPublicacion - publicacionesPorPagina;
+  const publicacionesActuales = publicacionesFiltradas.slice(indexPrimeraPublicacion, indexUltimaPublicacion);
+  const totalPaginas = Math.ceil(publicacionesFiltradas.length / publicacionesPorPagina);
+
+  const cambiarPagina = (numeroPagina) => {
+    setPaginaActual(numeroPagina);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (loading) {
@@ -190,9 +204,10 @@ const Home = () => {
           )}
         </div>
       ) : (
-        <div className="publications-grid">
-          {publicacionesFiltradas.map((pub) => (
-            <div key={pub.id} className="publication-card">
+        <>
+          <div className="publications-grid">
+            {publicacionesActuales.map((pub) => (
+              <div key={pub.id} className="publication-card">
               <Link to={`/publicacion/${pub.id}`} className="card-link">
                 <div className="publication-image">
                   {pub.imagen_principal ? (
@@ -231,6 +246,40 @@ const Home = () => {
             </div>
           ))}
         </div>
+
+        {/* Controles de paginación */}
+        {totalPaginas > 1 && (
+          <div className="pagination">
+            <button 
+              onClick={() => cambiarPagina(paginaActual - 1)}
+              disabled={paginaActual === 1}
+              className="pagination-btn"
+            >
+              ← Anterior
+            </button>
+
+            <div className="pagination-numbers">
+              {[...Array(totalPaginas)].map((_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => cambiarPagina(index + 1)}
+                  className={`pagination-number ${paginaActual === index + 1 ? 'active' : ''}`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+
+            <button 
+              onClick={() => cambiarPagina(paginaActual + 1)}
+              disabled={paginaActual === totalPaginas}
+              className="pagination-btn"
+            >
+              Siguiente →
+            </button>
+          </div>
+        )}
+      </>
       )}
     </div>
   );

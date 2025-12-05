@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" fill="none">
+  <!-- Escudo de Chile simplificado -->
+  <rect x="10" y="15" width="50" height="50" fill="#0039A6" rx="5"/>
+  <polygon points="35,25 42,40 28,40" fill="white"/>
+  <rect x="30" y="42" width="10" height="18" fill="#D52B1E"/>
+  
+  <!-- Texto -->
+  <text x="70" y="35" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2c3e50">
+    FISCALÍA DE CHILE
+  </text>
+  <text x="70" y="55" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d">
+    Ministerio Público
+  </text>
+</svg>

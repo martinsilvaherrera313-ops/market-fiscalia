@@ -5,6 +5,17 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const db = require('../config/database');
 
+// Detectar tipo de base de datos
+const isPostgres = process.env.DATABASE_URL || process.env.DB_TYPE === 'postgres';
+
+// Helper para convertir placeholders
+function toSQL(query, params) {
+  if (!isPostgres) return { query, params };
+  let paramIndex = 1;
+  const newQuery = query.replace(/\?/g, () => `$${paramIndex++}`);
+  return { query: newQuery, params };
+}
+
 // Validaciones
 const registerValidation = [
   body('nombre').trim().notEmpty().withMessage('El nombre es requerido'),
@@ -40,12 +51,14 @@ router.post('/register', registerValidation, async (req, res) => {
     const { nombre, email, password, telefono, departamento } = req.body;
 
     // Verificar si el email ya existe
-    const [existingUser] = await db.query(
+    const { query: checkQuery, params: checkParams } = toSQL(
       'SELECT id FROM usuarios WHERE email = ?',
       [email]
     );
+    const existingUser = await db.query(checkQuery, checkParams);
+    const rows = isPostgres ? existingUser.rows : existingUser[0];
 
-    if (existingUser.length > 0) {
+    if (rows.length > 0) {
       return res.status(400).json({ 
         error: 'Este correo ya está registrado' 
       });
@@ -55,14 +68,18 @@ router.post('/register', registerValidation, async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insertar usuario
-    const [result] = await db.query(
-      'INSERT INTO usuarios (nombre, email, password, telefono, departamento) VALUES (?, ?, ?, ?, ?)',
+    const { query: insertQuery, params: insertParams } = toSQL(
+      isPostgres 
+        ? 'INSERT INTO usuarios (nombre, email, password, telefono, departamento) VALUES (?, ?, ?, ?, ?) RETURNING id'
+        : 'INSERT INTO usuarios (nombre, email, password, telefono, departamento) VALUES (?, ?, ?, ?, ?)',
       [nombre, email, hashedPassword, telefono || null, departamento || null]
     );
+    const insertResult = await db.query(insertQuery, insertParams);
+    const userId = isPostgres ? insertResult.rows[0].id : insertResult[0].insertId;
 
     // Generar token
     const token = jwt.sign(
-      { id: result.insertId, email },
+      { id: userId, email },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -71,7 +88,7 @@ router.post('/register', registerValidation, async (req, res) => {
       message: 'Usuario registrado exitosamente',
       token,
       user: {
-        id: result.insertId,
+        id: userId,
         nombre,
         email,
         telefono,
@@ -97,10 +114,12 @@ router.post('/login', loginValidation, async (req, res) => {
     const { email, password } = req.body;
 
     // Buscar usuario
-    const [users] = await db.query(
+    const { query: selectQuery, params: selectParams } = toSQL(
       'SELECT * FROM usuarios WHERE email = ?',
       [email]
     );
+    const userResult = await db.query(selectQuery, selectParams);
+    const users = isPostgres ? userResult.rows : userResult[0];
 
     if (users.length === 0) {
       return res.status(401).json({ 
@@ -148,10 +167,12 @@ router.post('/login', loginValidation, async (req, res) => {
 // Obtener perfil del usuario autenticado
 router.get('/profile', require('../middleware/auth'), async (req, res) => {
   try {
-    const [users] = await db.query(
+    const { query: profileQuery, params: profileParams } = toSQL(
       'SELECT id, nombre, email, telefono, departamento, created_at FROM usuarios WHERE id = ?',
       [req.user.id]
     );
+    const profileResult = await db.query(profileQuery, profileParams);
+    const users = isPostgres ? profileResult.rows : profileResult[0];
 
     if (users.length === 0) {
       return res.status(404).json({ error: 'Usuario no encontrado' });

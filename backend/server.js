@@ -11,17 +11,34 @@ const PORT = process.env.PORT || 5000;
 // Función para inicializar la base de datos
 async function initializeDatabase() {
   try {
+    // Solo ejecutar en PostgreSQL
+    if (!process.env.DATABASE_URL) {
+      return;
+    }
+
+    console.log('📦 Verificando tablas en PostgreSQL...');
+    
+    // Verificar si las tablas ya existen
+    const checkTables = await db.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      AND table_name = 'usuarios'
+    `);
+    
+    if (checkTables.rows && checkTables.rows.length > 0) {
+      console.log('ℹ️  Las tablas ya existen, omitiendo inicialización');
+      return;
+    }
+
+    // Si no existen, crear las tablas
+    console.log('📦 Inicializando base de datos PostgreSQL...');
     const schemaPath = path.join(__dirname, 'database', 'schema.postgresql.sql');
     const schema = await fs.readFile(schemaPath, 'utf8');
-    
-    // Ejecutar el schema (PostgreSQL)
-    if (process.env.DATABASE_URL) {
-      console.log('📦 Inicializando base de datos PostgreSQL...');
-      await db.query(schema);
-      console.log('✅ Base de datos inicializada correctamente');
-    }
+    await db.query(schema);
+    console.log('✅ Base de datos inicializada correctamente');
   } catch (error) {
-    console.log('ℹ️  Base de datos ya inicializada o error:', error.message);
+    console.log('ℹ️  Error en inicialización:', error.message);
   }
 }
 

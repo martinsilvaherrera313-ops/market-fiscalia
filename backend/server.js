@@ -1,10 +1,29 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs').promises;
+const db = require('./config/database');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Función para inicializar la base de datos
+async function initializeDatabase() {
+  try {
+    const schemaPath = path.join(__dirname, 'database', 'schema.postgresql.sql');
+    const schema = await fs.readFile(schemaPath, 'utf8');
+    
+    // Ejecutar el schema (PostgreSQL)
+    if (process.env.DATABASE_URL) {
+      console.log('📦 Inicializando base de datos PostgreSQL...');
+      await db.query(schema);
+      console.log('✅ Base de datos inicializada correctamente');
+    }
+  } catch (error) {
+    console.log('ℹ️  Base de datos ya inicializada o error:', error.message);
+  }
+}
 
 // Middlewares
 app.use(cors({
@@ -43,8 +62,18 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
-  console.log(`📍 http://localhost:${PORT}/api`);
-});
+// Iniciar servidor con inicialización de base de datos
+async function startServer() {
+  try {
+    await initializeDatabase();
+    app.listen(PORT, () => {
+      console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+      console.log(`📍 http://localhost:${PORT}/api`);
+    });
+  } catch (error) {
+    console.error('❌ Error al iniciar el servidor:', error);
+    process.exit(1);
+  }
+}
+
+startServer();

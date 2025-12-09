@@ -9,6 +9,7 @@ const MyPublications = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [expandedCards, setExpandedCards] = useState({});
 
   useEffect(() => {
     fetchMyPublicaciones();
@@ -77,6 +78,13 @@ const MyPublications = () => {
       alert('Error al actualizar el estado');
       console.error(err);
     }
+  };
+
+  const toggleCardExpansion = (id) => {
+    setExpandedCards(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
   const formatPrice = (price) => {
@@ -176,32 +184,42 @@ const MyPublications = () => {
                 </p>
               </div>
 
-              <div className="my-pub-actions">
-                <Link 
-                  to={`/publicacion/${pub.id}`}
-                  className="btn-view"
-                >
-                  Ver
-                </Link>
-                <Link 
-                  to={`/editar-publicacion/${pub.id}`}
-                  className="btn-edit"
-                  style={{ display: pub.estado === 'vendido' ? 'none' : 'inline-block' }}
-                >
-                  Editar
-                </Link>
+              <div className="my-pub-footer">
                 <button 
-                  onClick={() => handleToggleEstado(pub.id, pub.estado, pub.titulo)}
-                  className={pub.estado === 'vendido' ? 'btn-reactivar' : 'btn-vendido'}
+                  className={`toggle-actions-btn ${expandedCards[pub.id] ? 'expanded' : ''}`}
+                  onClick={() => toggleCardExpansion(pub.id)}
                 >
-                  {pub.estado === 'vendido' ? 'Reactivar' : 'Vendido'}
+                  <span>Acciones</span>
+                  <span className="arrow">▼</span>
                 </button>
-                <button 
-                  onClick={() => handleDelete(pub.id, pub.titulo)}
-                  className="btn-delete"
-                >
-                  Eliminar
-                </button>
+
+                <div className={`my-pub-actions ${expandedCards[pub.id] ? 'show' : ''}`}>
+                  <Link 
+                    to={`/publicacion/${pub.id}`}
+                    className="btn-view"
+                  >
+                    Ver
+                  </Link>
+                  <Link 
+                    to={`/editar-publicacion/${pub.id}`}
+                    className="btn-edit"
+                    style={{ display: pub.estado === 'vendido' ? 'none' : 'inline-block' }}
+                  >
+                    Editar
+                  </Link>
+                  <button 
+                    onClick={() => handleToggleEstado(pub.id, pub.estado, pub.titulo)}
+                    className={pub.estado === 'vendido' ? 'btn-reactivar' : 'btn-vendido'}
+                  >
+                    {pub.estado === 'vendido' ? 'Reactivar' : 'Vendido'}
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(pub.id, pub.titulo)}
+                    className="btn-delete"
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </div>
             </div>
           ))}

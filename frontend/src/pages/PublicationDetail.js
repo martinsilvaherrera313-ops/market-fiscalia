@@ -91,7 +91,7 @@ const PublicationDetail = () => {
     <div className="detail-container">
       <div className="detail-header">
         <button onClick={() => navigate(-1)} className="btn-back">
-          ← Volver
+          Volver
         </button>
       </div>
       <div className="detail-content">

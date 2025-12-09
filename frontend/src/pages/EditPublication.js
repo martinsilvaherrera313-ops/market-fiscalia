@@ -139,7 +139,7 @@ const EditPublication = () => {
     <div className="create-container">
       <div className="create-header">
         <button onClick={() => navigate(-1)} className="btn-back">
-          ← Volver
+          Volver
         </button>
       </div>
       <div className="create-card">

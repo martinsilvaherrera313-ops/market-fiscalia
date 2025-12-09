@@ -92,6 +92,11 @@ const CreatePublication = () => {
 
   return (
     <div className="create-container">
+      <div className="create-header">
+        <button onClick={() => navigate(-1)} className="btn-back">
+          ← Volver
+        </button>
+      </div>
       <div className="create-card">
         <h1>Nueva Publicación</h1>
 

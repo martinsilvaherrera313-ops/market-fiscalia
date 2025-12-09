@@ -137,6 +137,11 @@ const EditPublication = () => {
 
   return (
     <div className="create-container">
+      <div className="create-header">
+        <button onClick={() => navigate(-1)} className="btn-back">
+          ← Volver
+        </button>
+      </div>
       <div className="create-card">
         <h1>Editar Publicación</h1>
 

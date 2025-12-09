@@ -89,6 +89,11 @@ const PublicationDetail = () => {
 
   return (
     <div className="detail-container">
+      <div className="detail-header">
+        <button onClick={() => navigate(-1)} className="btn-back">
+          ← Volver
+        </button>
+      </div>
       <div className="detail-content">
         <div className="detail-images">
           {images.length > 0 ? (

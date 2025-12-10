@@ -7,6 +7,8 @@ const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const dropdownRef = useRef(null);
 
   const handleLogout = () => {
@@ -26,8 +28,34 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Auto-ocultar navbar en móvil al hacer scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Solo aplicar en móvil (ancho menor a 768px)
+      if (window.innerWidth <= 768) {
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          // Scroll hacia abajo - ocultar navbar
+          setIsVisible(false);
+        } else if (currentScrollY < lastScrollY) {
+          // Scroll hacia arriba - mostrar navbar
+          setIsVisible(true);
+        }
+      } else {
+        // En desktop siempre visible
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${!isVisible ? 'navbar-hidden' : ''}`}>
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
           <img src="/logo-fiscalia.png" alt="Fiscalía de Chile" className="navbar-logo-img" />

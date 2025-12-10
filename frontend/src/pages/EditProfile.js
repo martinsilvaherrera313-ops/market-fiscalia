@@ -139,43 +139,47 @@ const EditProfile = () => {
         <form onSubmit={handleSubmitProfile} className="profile-form">
           <h3>Datos personales</h3>
           
-          <div className="form-group">
-            <label htmlFor="nombre">Nombre completo *</label>
-            <input
-              type="text"
-              id="nombre"
-              name="nombre"
-              value={formData.nombre}
-              onChange={handleChange}
-              required
-              placeholder="Ej: Juan Pérez González"
-            />
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="nombre">Nombre completo *</label>
+              <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+                required
+                placeholder="Ej: Juan Pérez González"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="telefono">Teléfono</label>
+              <input
+                type="tel"
+                id="telefono"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleChange}
+                placeholder="Ej: +56912345678"
+              />
+              <small>Opcional - Visible en tus publicaciones</small>
+            </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="telefono">Teléfono</label>
-            <input
-              type="tel"
-              id="telefono"
-              name="telefono"
-              value={formData.telefono}
-              onChange={handleChange}
-              placeholder="Ej: +56912345678"
-            />
-            <small>Opcional - Será visible en tus publicaciones</small>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="departamento">Departamento</label>
-            <input
-              type="text"
-              id="departamento"
-              name="departamento"
-              value={formData.departamento}
-              onChange={handleChange}
-              placeholder="Ej: Fiscalía Regional Metropolitana Sur"
-            />
-            <small>Opcional</small>
+          <div className="form-row">
+            <div className="form-group form-row-full">
+              <label htmlFor="departamento">Departamento</label>
+              <input
+                type="text"
+                id="departamento"
+                name="departamento"
+                value={formData.departamento}
+                onChange={handleChange}
+                placeholder="Ej: Fiscalía Regional Metropolitana Sur"
+              />
+              <small>Opcional</small>
+            </div>
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading}>
@@ -196,45 +200,49 @@ const EditProfile = () => {
             </button>
           ) : (
             <form onSubmit={handleSubmitPassword} className="password-form">
-              <div className="form-group">
-                <label htmlFor="currentPassword">Contraseña actual *</label>
-                <input
-                  type="password"
-                  id="currentPassword"
-                  name="currentPassword"
-                  value={passwordData.currentPassword}
-                  onChange={handlePasswordChange}
-                  required
-                  placeholder="Ingresa tu contraseña actual"
-                />
+              <div className="form-row">
+                <div className="form-group form-row-full">
+                  <label htmlFor="currentPassword">Contraseña actual *</label>
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    name="currentPassword"
+                    value={passwordData.currentPassword}
+                    onChange={handlePasswordChange}
+                    required
+                    placeholder="Ingresa tu contraseña actual"
+                  />
+                </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="newPassword">Nueva contraseña *</label>
-                <input
-                  type="password"
-                  id="newPassword"
-                  name="newPassword"
-                  value={passwordData.newPassword}
-                  onChange={handlePasswordChange}
-                  required
-                  minLength="6"
-                  placeholder="Mínimo 6 caracteres"
-                />
-              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="newPassword">Nueva contraseña *</label>
+                  <input
+                    type="password"
+                    id="newPassword"
+                    name="newPassword"
+                    value={passwordData.newPassword}
+                    onChange={handlePasswordChange}
+                    required
+                    minLength="6"
+                    placeholder="Mínimo 6 caracteres"
+                  />
+                </div>
 
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Confirmar nueva contraseña *</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={passwordData.confirmPassword}
-                  onChange={handlePasswordChange}
-                  required
-                  minLength="6"
-                  placeholder="Repite la nueva contraseña"
-                />
+                <div className="form-group">
+                  <label htmlFor="confirmPassword">Confirmar contraseña *</label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={passwordData.confirmPassword}
+                    onChange={handlePasswordChange}
+                    required
+                    minLength="6"
+                    placeholder="Repite la nueva contraseña"
+                  />
+                </div>
               </div>
 
               <div className="form-actions">

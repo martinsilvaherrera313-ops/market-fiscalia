@@ -13,7 +13,7 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   padding: 2.5rem;
   width: 100%;
-  max-width: 450px;
+  max-width: 600px;
 }
 
 .auth-title {
@@ -35,13 +35,23 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.form-group-full {
+  grid-column: 1 / -1;
 }
 
 .form-group label {
@@ -122,6 +132,16 @@
   border-left: 4px solid #c33;
   margin-bottom: 1rem;
   font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .auth-card {
+    max-width: 450px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 500px) {

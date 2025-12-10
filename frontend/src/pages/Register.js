@@ -66,7 +66,7 @@ const Register = () => {
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
+          <div className="form-group form-group-full">
             <label htmlFor="nombre">Nombre Completo *</label>
             <input
               type="text"
@@ -79,7 +79,7 @@ const Register = () => {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group form-group-full">
             <label htmlFor="email">Correo Institucional *</label>
             <input
               type="email"
@@ -93,56 +93,60 @@ const Register = () => {
             <small>Solo correos @minpublico.cl</small>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Contraseña *</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              minLength="6"
-              placeholder="Mínimo 6 caracteres"
-            />
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="password">Contraseña *</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                minLength="6"
+                placeholder="Mínimo 6 caracteres"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirmar Contraseña *</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                minLength="6"
+                placeholder="Repite tu contraseña"
+              />
+            </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirmar Contraseña *</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              minLength="6"
-              placeholder="Repite tu contraseña"
-            />
-          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="telefono">Teléfono</label>
+              <input
+                type="tel"
+                id="telefono"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleChange}
+                placeholder="Ej: +56912345678"
+              />
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="telefono">Teléfono</label>
-            <input
-              type="tel"
-              id="telefono"
-              name="telefono"
-              value={formData.telefono}
-              onChange={handleChange}
-              placeholder="Ej: +56912345678"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="departamento">Departamento</label>
-            <input
-              type="text"
-              id="departamento"
-              name="departamento"
-              value={formData.departamento}
-              onChange={handleChange}
-              placeholder="Ej: Recursos Humanos, Tecnología"
-            />
+            <div className="form-group">
+              <label htmlFor="departamento">Departamento</label>
+              <input
+                type="text"
+                id="departamento"
+                name="departamento"
+                value={formData.departamento}
+                onChange={handleChange}
+                placeholder="Ej: Recursos Humanos, Tecnología"
+              />
+            </div>
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading}>

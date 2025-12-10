@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
 import ScrollButton from './components/ScrollButton';
+import InactivityWarning from './components/InactivityWarning';
 
 // Pages
 import Login from './pages/Login';
@@ -23,6 +24,7 @@ function App() {
         <div className="App">
           <Navbar />
           <ScrollButton />
+          <InactivityWarning />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

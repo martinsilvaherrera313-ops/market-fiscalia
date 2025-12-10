@@ -318,12 +318,21 @@
 }
 
 @media (max-width: 768px) {
+  .home-container {
+    padding: 1.5rem 1rem;
+  }
+
   .home-header h1 {
     font-size: 2rem;
   }
 
+  .home-header p {
+    font-size: 1rem;
+  }
+
   .filters-container {
     flex-direction: column;
+    gap: 1rem;
   }
 
   .search-box {
@@ -334,6 +343,7 @@
     flex-direction: column;
     align-items: stretch;
     width: 100%;
+    gap: 0.75rem;
   }
 
   .filter-select {
@@ -342,7 +352,71 @@
 
   .publications-grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .pub-card {
+    max-width: 100%;
+  }
+
+  .pub-image {
+    height: 200px;
+  }
+
+  .pub-info {
+    padding: 1rem;
+  }
+
+  .pub-title {
+    font-size: 1.1rem;
+  }
+
+  .pub-price {
+    font-size: 1.3rem;
+  }
+
+  .pub-footer {
+    padding: 0.875rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    padding: 1rem 0.75rem;
+  }
+
+  .home-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .home-header p {
+    font-size: 0.95rem;
+  }
+
+  .publications-grid {
+    gap: 1rem;
+  }
+
+  .pub-image {
+    height: 180px;
+  }
+
+  .pub-info {
+    padding: 0.875rem;
+  }
+
+  .pub-title {
+    font-size: 1rem;
+  }
+
+  .pub-price {
+    font-size: 1.2rem;
+  }
+
+  .pub-footer {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.8rem;
   }
 }
 

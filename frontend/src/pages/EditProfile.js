@@ -129,7 +129,7 @@ const EditProfile = () => {
         <div className="profile-info-section">
           <h3>Información de cuenta</h3>
           <div className="info-item">
-            <label>Email institucional:</label>
+            <label>Correo electrónico:</label>
             <p className="email-display">{user?.email}</p>
             <small>El email no se puede modificar</small>
           </div>

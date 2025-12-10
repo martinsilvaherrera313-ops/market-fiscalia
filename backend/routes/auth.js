@@ -185,4 +185,85 @@ router.get('/profile', require('../middleware/auth'), async (req, res) => {
   }
 });
 
+// Actualizar perfil del usuario
+router.put('/profile', require('../middleware/auth'), async (req, res) => {
+  try {
+    const { nombre, telefono, departamento } = req.body;
+
+    if (!nombre || !nombre.trim()) {
+      return res.status(400).json({ error: 'El nombre es obligatorio' });
+    }
+
+    const { query: updateQuery, params: updateParams } = toSQL(
+      'UPDATE usuarios SET nombre = ?, telefono = ?, departamento = ? WHERE id = ?',
+      [nombre.trim(), telefono || null, departamento || null, req.user.id]
+    );
+    await db.query(updateQuery, updateParams);
+
+    // Obtener datos actualizados
+    const { query: selectQuery, params: selectParams } = toSQL(
+      'SELECT id, nombre, email, telefono, departamento FROM usuarios WHERE id = ?',
+      [req.user.id]
+    );
+    const result = await db.query(selectQuery, selectParams);
+    const users = isPostgres ? result.rows : result[0];
+
+    res.json({
+      message: 'Perfil actualizado exitosamente',
+      user: users[0]
+    });
+  } catch (error) {
+    console.error('Error al actualizar perfil:', error);
+    res.status(500).json({ error: 'Error al actualizar perfil' });
+  }
+});
+
+// Cambiar contraseña
+router.put('/change-password', require('../middleware/auth'), async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: 'La nueva contraseña debe tener al menos 6 caracteres' });
+    }
+
+    // Verificar contraseña actual
+    const { query: selectQuery, params: selectParams } = toSQL(
+      'SELECT password FROM usuarios WHERE id = ?',
+      [req.user.id]
+    );
+    const result = await db.query(selectQuery, selectParams);
+    const users = isPostgres ? result.rows : result[0];
+
+    if (users.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const isValidPassword = await bcrypt.compare(currentPassword, users[0].password);
+
+    if (!isValidPassword) {
+      return res.status(401).json({ error: 'Contraseña actual incorrecta' });
+    }
+
+    // Encriptar nueva contraseña
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Actualizar contraseña
+    const { query: updateQuery, params: updateParams } = toSQL(
+      'UPDATE usuarios SET password = ? WHERE id = ?',
+      [hashedPassword, req.user.id]
+    );
+    await db.query(updateQuery, updateParams);
+
+    res.json({ message: 'Contraseña actualizada exitosamente' });
+  } catch (error) {
+    console.error('Error al cambiar contraseña:', error);
+    res.status(500).json({ error: 'Error al cambiar contraseña' });
+  }
+});
+
 module.exports = router;

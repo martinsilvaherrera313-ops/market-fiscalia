@@ -79,33 +79,104 @@
 }
 
 .navbar-user {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 1rem;
   margin-left: 1rem;
   padding-left: 1rem;
   border-left: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.navbar-username {
+.navbar-username-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
   color: #ecf0f1;
-  font-weight: 500;
-}
-
-.navbar-logout {
-  background-color: transparent;
-  color: #e74c3c;
-  border: 1px solid #e74c3c;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.95rem;
   transition: all 0.3s;
 }
 
-.navbar-logout:hover {
-  background-color: #e74c3c;
-  color: white;
+.navbar-username-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.user-icon {
+  font-size: 1.1rem;
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.3s;
+  margin-left: 0.25rem;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  overflow: hidden;
+  z-index: 1001;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  background: white;
+  border: none;
+  color: #2c3e50;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+}
+
+.dropdown-item:hover {
+  background: #f8f9fa;
+}
+
+.dropdown-logout {
+  color: #e74c3c;
+  border-top: 1px solid #ecf0f1;
+}
+
+.dropdown-logout:hover {
+  background: #fee;
+}
+
+.dropdown-icon {
+  font-size: 1.1rem;
 }
 
 @media (max-width: 768px) {

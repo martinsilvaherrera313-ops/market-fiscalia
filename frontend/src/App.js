@@ -14,6 +14,7 @@ import PublicationDetail from './pages/PublicationDetail';
 import CreatePublication from './pages/CreatePublication';
 import EditPublication from './pages/EditPublication';
 import MyPublications from './pages/MyPublications';
+import EditProfile from './pages/EditProfile';
 
 import './App.css';
 
@@ -70,6 +71,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <MyPublications />
+                </PrivateRoute>
+              } 
+            />
+
+            <Route 
+              path="/editar-perfil" 
+              element={
+                <PrivateRoute>
+                  <EditProfile />
                 </PrivateRoute>
               } 
             />

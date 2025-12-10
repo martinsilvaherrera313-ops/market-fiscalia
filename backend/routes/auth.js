@@ -21,13 +21,7 @@ const registerValidation = [
   body('nombre').trim().notEmpty().withMessage('El nombre es requerido'),
   body('email')
     .trim()
-    .isEmail().withMessage('Email inválido')
-    .custom(value => {
-      if (!value.endsWith('@minpublico.cl')) {
-        throw new Error('Solo se permiten correos @minpublico.cl');
-      }
-      return true;
-    }),
+    .isEmail().withMessage('Email inválido'),
   body('password')
     .isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
   body('telefono').optional().trim(),

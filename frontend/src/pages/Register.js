@@ -34,11 +34,6 @@ const Register = () => {
       return;
     }
 
-    if (!formData.email.endsWith('@minpublico.cl')) {
-      setError('Solo se permiten correos @minpublico.cl');
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -80,7 +75,7 @@ const Register = () => {
           </div>
 
           <div className="form-group form-group-full">
-            <label htmlFor="email">Correo Institucional *</label>
+            <label htmlFor="email">Correo Electrónico *</label>
             <input
               type="email"
               id="email"
@@ -88,9 +83,8 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              placeholder="nombre@minpublico.cl"
+              placeholder="tucorreo@ejemplo.com"
             />
-            <small>Solo correos @minpublico.cl</small>
           </div>
 
           <div className="form-row">

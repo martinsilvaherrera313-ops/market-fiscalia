@@ -142,7 +142,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="home-header">
-        <h1>Market Fiscalía</h1>
+        <h1>Feed de la Comunidad</h1>
         <p>Tu espacio para vender y emprender</p>
       </div>
 

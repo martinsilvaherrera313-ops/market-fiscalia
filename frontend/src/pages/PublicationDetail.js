@@ -147,26 +147,26 @@ const PublicationDetail = () => {
           <div className="product-header">
             <h1 className="detail-title">{publicacion.titulo}</h1>
             {publicacion.categoria && (
-              <span className="product-category">📦 {publicacion.categoria}</span>
+              <span className="product-category">{publicacion.categoria}</span>
             )}
           </div>
 
           <div className="price-section">
             <p className="detail-price">{formatPrice(publicacion.precio)}</p>
             {publicacion.ubicacion && (
-              <p className="product-location">📍 {publicacion.ubicacion}</p>
+              <p className="product-location">{publicacion.ubicacion}</p>
             )}
           </div>
 
           {/* Descripción destacada */}
           <div className="detail-section description-box">
-            <h3>✨ Descripción del producto</h3>
+            <h3>Descripción</h3>
             <p className="detail-description">{publicacion.descripcion}</p>
           </div>
 
           {/* Información del vendedor en card */}
           <div className="detail-section seller-card">
-            <h3>👤 Información del vendedor</h3>
+            <h3>Información del vendedor</h3>
             <div className="seller-info">
               <div className="seller-row">
                 <span className="seller-label">Nombre:</span>
@@ -197,9 +197,9 @@ const PublicationDetail = () => {
 
           {/* Metadata */}
           <div className="detail-meta">
-            <p className="meta-date">🕐 Publicado el {formatDate(publicacion.created_at)}</p>
+            <p className="meta-date">Publicado el {formatDate(publicacion.created_at)}</p>
             {publicacion.updated_at !== publicacion.created_at && (
-              <p className="meta-date">🔄 Actualizado el {formatDate(publicacion.updated_at)}</p>
+              <p className="meta-date">Actualizado el {formatDate(publicacion.updated_at)}</p>
             )}
           </div>
 

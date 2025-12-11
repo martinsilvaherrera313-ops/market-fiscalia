@@ -143,7 +143,7 @@ const Home = () => {
     <div className="home-container">
       <div className="home-header">
         <h1>Market Fiscalía</h1>
-        <p>Descubre productos y servicios de tus compañeros</p>
+        <p>Tu espacio para vender y emprender</p>
       </div>
 
       {successMessage && (

@@ -143,29 +143,63 @@ const PublicationDetail = () => {
         </div>
 
         <div className="detail-info">
-          <h1 className="detail-title">{publicacion.titulo}</h1>
-          <p className="detail-price">{formatPrice(publicacion.precio)}</p>
+          {/* Título y precio destacado */}
+          <div className="product-header">
+            <h1 className="detail-title">{publicacion.titulo}</h1>
+            {publicacion.categoria && (
+              <span className="product-category">📦 {publicacion.categoria}</span>
+            )}
+          </div>
 
-          <div className="detail-section">
-            <h3>Descripción</h3>
+          <div className="price-section">
+            <p className="detail-price">{formatPrice(publicacion.precio)}</p>
+            {publicacion.ubicacion && (
+              <p className="product-location">📍 {publicacion.ubicacion}</p>
+            )}
+          </div>
+
+          {/* Descripción destacada */}
+          <div className="detail-section description-box">
+            <h3>✨ Descripción del producto</h3>
             <p className="detail-description">{publicacion.descripcion}</p>
           </div>
 
-          <div className="detail-section">
-            <h3>Información del vendedor</h3>
+          {/* Información del vendedor en card */}
+          <div className="detail-section seller-card">
+            <h3>👤 Información del vendedor</h3>
             <div className="seller-info">
-              <p><strong>Nombre:</strong> {publicacion.usuario_nombre}</p>
-              <p><strong>Email:</strong> {publicacion.usuario_email}</p>
+              <div className="seller-row">
+                <span className="seller-label">Nombre:</span>
+                <span className="seller-value">{publicacion.usuario_nombre}</span>
+              </div>
+              <div className="seller-row">
+                <span className="seller-label">Email:</span>
+                <a href={`mailto:${publicacion.usuario_email}`} className="seller-email">
+                  {publicacion.usuario_email}
+                </a>
+              </div>
               {publicacion.usuario_telefono && (
-                <p><strong>Teléfono:</strong> {publicacion.usuario_telefono}</p>
+                <div className="seller-row">
+                  <span className="seller-label">Teléfono:</span>
+                  <a href={`tel:${publicacion.usuario_telefono}`} className="seller-phone">
+                    {publicacion.usuario_telefono}
+                  </a>
+                </div>
+              )}
+              {publicacion.usuario_departamento && (
+                <div className="seller-row">
+                  <span className="seller-label">Departamento:</span>
+                  <span className="seller-value">{publicacion.usuario_departamento}</span>
+                </div>
               )}
             </div>
           </div>
 
+          {/* Metadata */}
           <div className="detail-meta">
-            <p>Publicado el {formatDate(publicacion.created_at)}</p>
+            <p className="meta-date">🕐 Publicado el {formatDate(publicacion.created_at)}</p>
             {publicacion.updated_at !== publicacion.created_at && (
-              <p>Actualizado el {formatDate(publicacion.updated_at)}</p>
+              <p className="meta-date">🔄 Actualizado el {formatDate(publicacion.updated_at)}</p>
             )}
           </div>
 

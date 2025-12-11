@@ -32,9 +32,13 @@
   transition: color 0.3s;
 }
 
-.navbar-logo-img {
-  height: 45px;
-  width: auto;
+.cart-icon {
+  font-size: 2rem;
+  transition: transform 0.3s;
+}
+
+.navbar-logo:hover .cart-icon {
+  transform: scale(1.1);
 }
 
 .navbar-logo:hover {

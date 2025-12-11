@@ -58,7 +58,7 @@ const Navbar = () => {
     <nav className={`navbar ${!isVisible ? 'navbar-hidden' : ''}`}>
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
-          <img src="/logo-fiscalia.png" alt="Fiscalía de Chile" className="navbar-logo-img" />
+          <span className="cart-icon">🛒</span>
           <span>Market Fiscalía</span>
         </Link>
 

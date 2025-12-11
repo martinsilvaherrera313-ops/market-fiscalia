@@ -35,10 +35,32 @@
 .cart-icon {
   font-size: 2rem;
   transition: transform 0.3s;
+  animation: cartBounce 2s ease-in-out infinite;
+}
+
+@keyframes cartBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 .navbar-logo:hover .cart-icon {
-  transform: scale(1.1);
+  animation: cartShake 0.5s ease-in-out;
+}
+
+@keyframes cartShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
 }
 
 .navbar-logo:hover {

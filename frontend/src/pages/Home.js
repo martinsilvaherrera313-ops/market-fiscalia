@@ -158,6 +158,7 @@ const Home = () => {
         <button 
           className="filters-toggle-btn"
           onClick={() => setMostrarFiltros(!mostrarFiltros)}
+          aria-label="Mostrar u ocultar filtros"
         >
           <span>🔍 Filtros y Búsqueda</span>
           <span className={`toggle-arrow ${mostrarFiltros ? 'open' : ''}`}>▼</span>

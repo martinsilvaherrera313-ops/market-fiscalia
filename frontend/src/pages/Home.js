@@ -15,7 +15,6 @@ const Home = () => {
   const [busqueda, setBusqueda] = useState('');
   const [ordenamiento, setOrdenamiento] = useState('recientes');
   const [paginaActual, setPaginaActual] = useState(1);
-  const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const publicacionesPorPagina = 12;
 
   useEffect(() => {
@@ -154,44 +153,33 @@ const Home = () => {
       )}
 
       {/* Barra de búsqueda y filtros */}
-      <div className="filters-wrapper">
-        <button 
-          className="filters-toggle-btn"
-          onClick={() => setMostrarFiltros(!mostrarFiltros)}
-          aria-label="Mostrar u ocultar filtros"
-        >
-          <span>🔍 Filtros y Búsqueda</span>
-          <span className={`toggle-arrow ${mostrarFiltros ? 'open' : ''}`}>▼</span>
-        </button>
+      <div className="filters-container">
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Buscar publicaciones..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="search-input"
+          />
+          <svg className="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
 
-        <div className={`filters-container ${mostrarFiltros ? 'expanded' : 'collapsed'}`}>
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="Buscar publicaciones..."
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              className="search-input"
-            />
-            <svg className="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-
-          <div className="filter-box">
-            <label htmlFor="ordenamiento">Ordenar por:</label>
-            <select
-              id="ordenamiento"
-              value={ordenamiento}
-              onChange={(e) => setOrdenamiento(e.target.value)}
-              className="filter-select"
-            >
-              <option value="recientes">Más recientes</option>
-              <option value="antiguos">Más antiguos</option>
-              <option value="precio-menor">Precio: Menor a mayor</option>
-              <option value="precio-mayor">Precio: Mayor a menor</option>
-            </select>
-          </div>
+        <div className="filter-box">
+          <label htmlFor="ordenamiento">Ordenar por:</label>
+          <select
+            id="ordenamiento"
+            value={ordenamiento}
+            onChange={(e) => setOrdenamiento(e.target.value)}
+            className="filter-select"
+          >
+            <option value="recientes">Más recientes</option>
+            <option value="antiguos">Más antiguos</option>
+            <option value="precio-menor">Precio: Menor a mayor</option>
+            <option value="precio-mayor">Precio: Mayor a menor</option>
+          </select>
         </div>
       </div>
 

@@ -132,6 +132,7 @@ const MyPublications = () => {
   return (
     <div className="my-pubs-container">
       <div className="my-pubs-header">
+        <Link to="/" className="btn-back">← Volver al inicio</Link>
         <h1>Mis Publicaciones</h1>
       </div>
 

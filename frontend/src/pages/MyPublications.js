@@ -198,20 +198,20 @@ const MyPublications = () => {
                     to={`/publicacion/${pub.id}`}
                     className="btn-view"
                   >
-                    Ver
+                    👁️ Ver
                   </Link>
                   <Link 
                     to={`/editar-publicacion/${pub.id}`}
                     className="btn-edit"
                     style={{ display: pub.estado === 'vendido' ? 'none' : 'inline-block' }}
                   >
-                    Editar
+                    ✏️ Editar
                   </Link>
                   <button 
                     onClick={() => handleToggleEstado(pub.id, pub.estado, pub.titulo)}
                     className={pub.estado === 'vendido' ? 'btn-reactivar' : 'btn-vendido'}
                   >
-                    {pub.estado === 'vendido' ? 'Reactivar' : 'Vendido'}
+                    {pub.estado === 'vendido' ? '♻️ Activar' : '✅ Vendido'}
                   </button>
                   <button 
                     onClick={() => handleDelete(pub.id, pub.titulo)}

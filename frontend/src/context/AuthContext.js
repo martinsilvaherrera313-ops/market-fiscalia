@@ -17,8 +17,8 @@ export const AuthProvider = ({ children }) => {
   const [showInactivityWarning, setShowInactivityWarning] = useState(false);
 
   // Timers para inactividad
-  const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutos
-  const WARNING_TIMEOUT = 13 * 60 * 1000; // 13 minutos (advertencia 2 min antes)
+  const INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 minutos
+  const WARNING_TIMEOUT = 8 * 60 * 1000; // 8 minutos (advertencia 2 min antes)
   let inactivityTimer = null;
   let warningTimer = null;
 

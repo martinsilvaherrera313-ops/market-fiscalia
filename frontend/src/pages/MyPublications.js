@@ -217,7 +217,7 @@ const MyPublications = () => {
                     onClick={() => handleDelete(pub.id, pub.titulo)}
                     className="btn-delete"
                   >
-                    Eliminar
+                    🗑️
                   </button>
                 </div>
               </div>

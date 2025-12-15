@@ -14,9 +14,10 @@ const PublicationDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isVertical, setIsVertical] = useState(false);
   const mainImgRef = useRef(null);
-  // Detectar si la imagen principal es vertical
+  const images = publicacion && Array.isArray(publicacion.imagenes) ? publicacion.imagenes : [];
+  // Detectar si la imagen principal es vertical SOLO si hay imágenes y publicacion cargada
   useEffect(() => {
-    if (!images.length) return;
+    if (!publicacion || !images.length) return;
     const img = new window.Image();
     img.src = images[currentImageIndex].url.startsWith('http')
       ? images[currentImageIndex].url
@@ -24,7 +25,7 @@ const PublicationDetail = () => {
     img.onload = function () {
       setIsVertical(img.naturalHeight > img.naturalWidth);
     };
-  }, [currentImageIndex, images]);
+  }, [currentImageIndex, images, publicacion]);
 
   useEffect(() => {
     fetchPublicacion();
@@ -90,7 +91,6 @@ const PublicationDetail = () => {
   }
 
   const isOwner = user && user.id === publicacion.usuario_id;
-  const images = publicacion.imagenes || [];
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);

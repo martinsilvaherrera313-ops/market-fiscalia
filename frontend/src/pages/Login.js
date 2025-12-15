@@ -45,7 +45,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="email">Correo Institucional</label>
+            <label htmlFor="email">Correo electrónico</label>
             <input
               type="email"
               id="email"
@@ -53,7 +53,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              placeholder="nombre@minpublico.cl"
+              placeholder="tucorreo@ejemplo.com"
             />
           </div>
 

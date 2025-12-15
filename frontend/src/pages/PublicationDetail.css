@@ -250,7 +250,7 @@
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border-left: 4px solid #667eea;
+  /* border-left removed for cleaner look */
 }
 
 .detail-price {
@@ -282,7 +282,7 @@
 }
 
 .description-box {
-  border-left: 4px solid #3498db;
+  /* border-left removed for cleaner look */
 }
 
 .detail-description {
@@ -295,7 +295,7 @@
 
 /* === SELLER CARD === */
 .seller-card {
-  border-left: 4px solid #e74c3c;
+  /* border-left removed for cleaner look */
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
 }
 
@@ -348,7 +348,7 @@
   padding: 1.25rem 2rem;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border-top: 3px solid #f39c12;
+  /* border-top removed for cleaner look */
 }
 
 .meta-date {

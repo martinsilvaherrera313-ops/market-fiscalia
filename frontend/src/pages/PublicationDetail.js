@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -12,6 +12,19 @@ const PublicationDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isVertical, setIsVertical] = useState(false);
+  const mainImgRef = useRef(null);
+  // Detectar si la imagen principal es vertical
+  useEffect(() => {
+    if (!images.length) return;
+    const img = new window.Image();
+    img.src = images[currentImageIndex].url.startsWith('http')
+      ? images[currentImageIndex].url
+      : `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${images[currentImageIndex].url}`;
+    img.onload = function () {
+      setIsVertical(img.naturalHeight > img.naturalWidth);
+    };
+  }, [currentImageIndex, images]);
 
   useEffect(() => {
     fetchPublicacion();
@@ -98,8 +111,9 @@ const PublicationDetail = () => {
         <div className="detail-images">
           {images.length > 0 ? (
             <>
-              <div className="main-image">
-                <img 
+              <div className={`main-image${isVertical ? ' vertical-img' : ''}`}>
+                <img
+                  ref={mainImgRef}
                   src={images[currentImageIndex].url.startsWith('http') ? images[currentImageIndex].url : `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${images[currentImageIndex].url}`}
                   alt={publicacion.titulo}
                   onError={(e) => {

@@ -103,8 +103,11 @@ const PublicationDetail = () => {
   return (
     <div className="detail-container">
       <div className="detail-header">
-        <button onClick={() => navigate(-1)} className="btn-back">
-          Volver
+        <button onClick={() => navigate(-1)} className="btn-back" aria-label="Volver al inicio">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span>Volver al inicio</span>
         </button>
       </div>
       <div className="detail-content">

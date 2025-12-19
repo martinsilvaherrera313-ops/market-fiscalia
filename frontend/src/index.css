@@ -11,3 +11,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Global: estándar para botones de 'volver' en todo el proyecto */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-back::before {
+  content: "<";
+  font-size: 1.05rem;
+  margin-right: 0.45rem;
+  color: #667eea;
+  opacity: 0.95;
+}

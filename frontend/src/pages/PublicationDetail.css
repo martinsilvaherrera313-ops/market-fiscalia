@@ -46,9 +46,7 @@
 /* Anular pseudo-elemento global que añade otra flecha en otras hojas
    (ej. MyPublications.css). Aquí usamos el SVG inline, así que
    removemos el contenido del ::before sólo para esta página. */
-.detail-header .btn-back::before {
-  content: none !important;
-}
+
 
 .detail-content {
   display: grid;

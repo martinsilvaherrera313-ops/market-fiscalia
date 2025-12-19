@@ -10,7 +10,7 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     telefono: '',
-    departamento: ''
+    // departamento removed: field not used on registration
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
         telefono: formData.telefono,
-        departamento: formData.departamento
+          // departamento intentionally omitted from registration
       });
       navigate('/');
     } catch (err) {
@@ -127,18 +127,6 @@ const Register = () => {
                 value={formData.telefono}
                 onChange={handleChange}
                 placeholder="Ej: +56912345678"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="departamento">Departamento</label>
-              <input
-                type="text"
-                id="departamento"
-                name="departamento"
-                value={formData.departamento}
-                onChange={handleChange}
-                placeholder="Ej: Recursos Humanos, Tecnología"
               />
             </div>
           </div>

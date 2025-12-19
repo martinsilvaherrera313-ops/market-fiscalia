@@ -11,7 +11,7 @@ const EditProfile = () => {
   const [formData, setFormData] = useState({
     nombre: user?.nombre || '',
     telefono: user?.telefono || '',
-    departamento: user?.departamento || ''
+    // departamento removed: not editable
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -52,12 +52,17 @@ const EditProfile = () => {
     setLoading(true);
 
     try {
-      const response = await api.put('/auth/profile', formData);
-      
+      // Send only editable fields
+      const payload = {
+        nombre: formData.nombre,
+        telefono: formData.telefono
+      };
+      const response = await api.put('/auth/profile', payload);
+
       // Actualizar datos en sessionStorage
-      const updatedUser = { ...user, ...formData };
+      const updatedUser = { ...user, ...payload };
       sessionStorage.setItem('user', JSON.stringify(updatedUser));
-      
+
       setSuccess('Perfil actualizado exitosamente');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
@@ -168,18 +173,7 @@ const EditProfile = () => {
           </div>
 
           <div className="form-row">
-            <div className="form-group form-row-full">
-              <label htmlFor="departamento">Departamento</label>
-              <input
-                type="text"
-                id="departamento"
-                name="departamento"
-                value={formData.departamento}
-                onChange={handleChange}
-                placeholder="Ej: Fiscalía Regional Metropolitana Sur"
-              />
-              <small>Opcional</small>
-            </div>
+            {/* Departamento removed from profile form */}
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading}>
